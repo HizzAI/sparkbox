@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SparkBox Admin — MIT CORER Barshi ECE</title>
+  <meta name="description" content="SparkBox Admin Portal for Electronics & Computer Engineering Department, MIT CORER Barshi" />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+
+  <!-- LOGIN PAGE -->
+  <div id="login-page" class="view-section">
+    <div class="login-container">
+      <div class="login-header">
+        <h2>⚡ SparkBox Admin</h2>
+        <p style="font-size: 0.85rem; margin-top: 8px;">Electronics & Computer Engineering Department<br/>MIT CORER Barshi</p>
+      </div>
+      <form id="login-form">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" required placeholder="admin@sparkbox.edu" />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" required placeholder="••••••••" />
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Sign In</button>
+        <p id="login-error" class="error-msg hidden"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- DASHBOARD PAGE -->
+  <div id="dashboard-page" class="view-section hidden">
+    
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2>⚡ SparkBox</h2>
+        <p>Admin Portal</p>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#overview" class="nav-item active" data-target="overview">Overview</a>
+        <a href="#suggestions" class="nav-item" data-target="suggestions">Manage Suggestions</a>
+        <a href="#announcements" class="nav-item" data-target="announcements">Announcements</a>
+        <a href="#analytics" class="nav-item" data-target="analytics">Analytics</a>
+      </nav>
+      <div class="sidebar-footer">
+        <button id="logout-btn" class="nav-btn" style="margin-top: 1rem; color: #ef4444;">🚪 Logout</button>
+      
+        <div style="margin-top: auto; padding-top: 1.5rem; font-size: 0.75rem; color: var(--text-muted); line-height: 1.5; border-top: 1px solid var(--border);">
+          <p style="font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">© 2026 SparkBox</p>
+          <p>Electronics & Computer Engineering Department</p>
+          <p>MIT College of Railway Engineering and Research, Barshi</p>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      
+      <!-- OVERVIEW -->
+      <section id="view-overview" class="content-section active">
+        <header class="section-header">
+          <h1>Overview</h1>
+        </header>
+        <div class="stats-grid">
+          <div class="stat-card"><h3>Total</h3><div class="stat-val" id="stat-total">0</div></div>
+          <div class="stat-card"><h3>New Today</h3><div class="stat-val" id="stat-today">0</div></div>
+          <div class="stat-card"><h3>Under Review</h3><div class="stat-val" id="stat-review">0</div></div>
+          <div class="stat-card"><h3>Approved</h3><div class="stat-val" id="stat-approved">0</div></div>
+          <div class="stat-card"><h3>Implemented</h3><div class="stat-val" id="stat-implemented">0</div></div>
+          <div class="stat-card"><h3>Rejected</h3><div class="stat-val" id="stat-rejected">0</div></div>
+        </div>
+        
+        <div class="panel">
+          <div class="panel-header">
+            <h2>Recent Suggestions</h2>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Student</th>
+                <th>Date</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="recent-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- MANAGE SUGGESTIONS -->
+      <section id="view-suggestions" class="content-section">
+        <header class="section-header">
+          <h1>Manage Suggestions</h1>
+        </header>
+        
+        <div class="toolbar">
+          <div class="search-box">
+            <input type="text" id="search-input" placeholder="Search title, name, or category..." />
+          </div>
+          <div class="filter-box">
+            <select id="status-filter">
+              <option value="All">All Statuses</option>
+              <option value="Submitted">Submitted</option>
+              <option value="Under Review">Under Review</option>
+              <option value="Approved">Approved</option>
+              <option value="Implemented">Implemented</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="panel">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Student</th>
+                <th>Votes</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="suggestions-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ANNOUNCEMENTS -->
+      <section id="view-announcements" class="content-section">
+        <header class="section-header">
+          <h1>Announcements</h1>
+        </header>
+        <!-- Monthly Challenge Editor -->
+        <div class="panel" style="margin-bottom: 2rem; border-color: rgba(139,92,246,.4);">
+          <div class="panel-header" style="background:rgba(139,92,246,.06)"><h2>🔥 Monthly Challenge</h2></div>
+          <div class="admin-form">
+            <div class="form-group">
+              <label>Challenge Prompt (shown to students on the homepage)</label>
+              <textarea id="challenge-text" rows="2" placeholder="e.g. How can we improve our department laboratories?"></textarea>
+            </div>
+            <button type="button" id="save-challenge-btn" class="btn btn-primary">Save Challenge</button>
+          </div>
+        </div>
+        <div class="panel" style="margin-bottom: 2rem;">
+          <div class="panel-header"><h2>Create Announcement</h2></div>
+
+          <form id="announcement-form" class="admin-form">
+            <div class="form-group">
+              <label>Title</label>
+              <input type="text" id="ann-title" required />
+            </div>
+            <div class="form-group">
+              <label>Content</label>
+              <textarea id="ann-content" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Publish Announcement</button>
+          </form>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header"><h2>Active Announcements</h2></div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Title</th>
+                <th>Content</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="ann-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ANALYTICS -->
+      <section id="view-analytics" class="content-section">
+        <header class="section-header">
+          <h1>Analytics</h1>
+        </header>
+        <div class="charts-grid">
+          <div class="panel">
+            <div class="panel-header"><h2>Suggestions by Category</h2></div>
+            <canvas id="chart-category"></canvas>
+          </div>
+          <div class="panel">
+            <div class="panel-header"><h2>Suggestions over Time (Last 6 Months)</h2></div>
+            <canvas id="chart-month"></canvas>
+          </div>
+        </div>
+        <div class="panel" style="margin-top: 2rem;">
+          <div class="panel-header"><h2>Most Voted Ideas</h2></div>
+          <table class="data-table">
+            <thead>
+              <tr><th>Title</th><th>Votes</th><th>Status</th></tr>
+            </thead>
+            <tbody id="top-ideas-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- IDEA DETAILS MODAL -->
+  <div id="idea-modal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modal-title">Idea Title</h2>
+        <button id="close-modal" class="btn-icon">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-meta">
+          <span class="badge" id="modal-cat">Category</span>
+          <span class="badge" id="modal-votes">0 Votes</span>
+          <span class="badge" id="modal-date">Date</span>
+          <span class="badge" id="modal-author">Author</span>
+        </div>
+        <div class="modal-desc" id="modal-desc">Description goes here</div>
+
+        <hr/>
+
+        <div class="form-group">
+          <label>Status</label>
+          <select id="modal-status">
+            <option value="Submitted">Submitted</option>
+            <option value="Under Review">Under Review</option>
+            <option value="Approved">Approved</option>
+            <option value="Implemented">Implemented</option>
+            <option value="Rejected">Rejected</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Admin Notes (Internal)</label>
+          <textarea id="modal-notes" rows="3" placeholder="Private notes..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Department Response (Public)</label>
+          <textarea id="modal-response" rows="3" placeholder="Public response..."></textarea>
+        </div>
+
+        <div class="form-group" style="flex-direction: row; align-items: center; gap: 10px;">
+          <input type="checkbox" id="modal-featured" />
+          <label for="modal-featured" style="margin: 0; font-weight: 600;">⭐ Mark as Featured Idea</label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="save-idea-btn" class="btn btn-primary">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="toast"></div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

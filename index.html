@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SparkBox — MIT CORER Barshi ECE</title>
+  <meta name="description" content="SparkBox is the official digital suggestion and innovation portal for the Electronics & Computer Engineering Department of MIT College of Railway Engineering and Research, Barshi." />
+  <meta property="og:title" content="SparkBox — MIT CORER Barshi ECE" />
+  <meta property="og:description" content="SparkBox is the official digital suggestion and innovation portal for the Electronics & Computer Engineering Department of MIT College of Railway Engineering and Research, Barshi." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://sparkbox.mitcorer.edu.in/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+  <!-- PARTICLE CANVAS -->
+  <canvas id="particle-canvas" aria-hidden="true"></canvas>
+
+  <!-- NAVIGATION -->
+  <nav class="navbar" id="navbar" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="#home" class="nav-logo" aria-label="SparkBox Home">
+        <span class="logo-icon" aria-hidden="true">⚡</span>
+        <span class="logo-text">SparkBox</span>
+      </a>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="nav-links" role="list">
+        <li><a href="#home"         class="nav-link" data-page="home">Home</a></li>
+        <li><a href="#about"        class="nav-link" data-page="about">About</a></li>
+        <li><a href="#feed"         class="nav-link" data-page="feed">Ideas</a></li>
+        <li><a href="#halloffame"   class="nav-link" data-page="halloffame">🏅 Hall of Fame</a></li>
+        <li><a href="#timeline"     class="nav-link" data-page="timeline">🚀 Implemented</a></li>
+        <li><a href="#leaderboard"  class="nav-link" data-page="leaderboard">Leaderboard</a></li>
+        <li><a href="#achievements" class="nav-link" data-page="achievements">Badges</a></li>
+        <li><a href="#faq"          class="nav-link" data-page="faq">FAQ</a></li>
+        <li><a href="#contact"      class="nav-link" data-page="contact">Contact</a></li>
+        <li><a href="#submit"       class="nav-link nav-cta" data-page="submit">Submit Idea 🚀</a></li>
+        <li><a href="admin.html" target="_blank" class="nav-link" style="opacity:0.7;font-size:0.85em">Admin 🔑</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- PAGES WRAPPER -->
+  <main id="main-content">
+
+    <!-- PAGE: HOME -->
+    <section class="page" id="page-home" role="region" aria-label="Home">
+
+      <div class="hero">
+        <div class="hero-badge animate-in">Electronics & Computer Engineering Department</div>
+        <h1 class="hero-title animate-in delay-1" style="font-size: clamp(2.5rem, 6vw, 5.5rem);">
+          <span class="brand-spark">⚡ SparkBox</span>
+        </h1>
+        <p class="hero-tagline animate-in delay-2" style="color: var(--text-primary); font-size: 1.2rem;">MIT College of Railway Engineering and Research, Barshi</p>
+        <p class="hero-tagline animate-in delay-3" style="font-size: 1.5rem; margin-top: 10px; margin-bottom: 20px;">"Your Ideas. Our Impact."</p>
+        <p class="hero-desc animate-in delay-3" style="max-width: 600px;">Welcome to MIT CORER Barshi Electronics & Computer Engineering Department Suggestion Portal.<br/><br/>Share your ideas, suggestions, and innovations to help us build a better department together.</p>
+        <div class="hero-actions animate-in delay-4">
+          <a href="#submit" class="btn btn-primary" data-page="submit">
+            <span aria-hidden="true">💡</span> Submit Your Idea
+          </a>
+          <a href="#feed" class="btn btn-outline" data-page="feed">
+            <span aria-hidden="true">🔍</span> Explore Ideas
+          </a>
+        </div>
+        <div class="hero-glow" aria-hidden="true"></div>
+      </div>
+
+      <div id="announcements-banner" style="display: none; max-width: 900px; margin: 2rem auto; padding: 1.5rem; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius); backdrop-filter: blur(10px);">
+        <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
+          <span>📢</span> Department Announcements
+        </h2>
+        <div id="announcements-list" style="display: flex; flex-direction: column; gap: 1rem;">
+          <!-- Fetched announcements go here -->
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="section">
+        <div class="stats-grid">
+          <div class="stat-card" style="--delay:.0s">
+            <div class="stat-icon" aria-hidden="true">💡</div>
+            <div class="stat-value counter" data-target="250">0</div>
+            <div class="stat-label">Total Suggestions</div>
+            <div class="stat-bar"><div class="stat-fill" style="--pct:100%"></div></div>
+          </div>
+          <div class="stat-card" style="--delay:.1s">
+            <div class="stat-icon" aria-hidden="true">✅</div>
+            <div class="stat-value counter" data-target="85">0</div>
+            <div class="stat-label">Implemented Ideas</div>
+            <div class="stat-bar"><div class="stat-fill" style="--pct:34%"></div></div>
+          </div>
+          <div class="stat-card" style="--delay:.2s">
+            <div class="stat-icon" aria-hidden="true">🚀</div>
+            <div class="stat-value counter" data-target="300">0</div>
+            <div class="stat-label">Active Contributors</div>
+            <div class="stat-bar"><div class="stat-fill" style="--pct:100%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Leaderboard Preview -->
+      <div class="section">
+        <div class="section-header">
+          <h2 class="section-title">🏆 SparkBox Champions</h2>
+          <a href="#leaderboard" class="section-link" data-page="leaderboard">View All →</a>
+        </div>
+        <div class="leaderboard-preview">
+          <div class="lb-item rank-gold">
+            <div class="lb-rank" aria-label="1st place">🥇</div>
+            <div class="lb-avatar" style="--color:#f59e0b" aria-hidden="true">R</div>
+            <div class="lb-info">
+              <span class="lb-name">Rahul</span>
+              <div class="xp-bar-wrap" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" aria-label="XP progress">
+                <div class="xp-bar" style="--xp:100%"></div>
+              </div>
+            </div>
+            <div class="lb-xp">1500 XP</div>
+          </div>
+          <div class="lb-item rank-silver">
+            <div class="lb-rank" aria-label="2nd place">🥈</div>
+            <div class="lb-avatar" style="--color:#8b5cf6" aria-hidden="true">P</div>
+            <div class="lb-info">
+              <span class="lb-name">Priya</span>
+              <div class="xp-bar-wrap" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" aria-label="XP progress">
+                <div class="xp-bar" style="--xp:80%"></div>
+              </div>
+            </div>
+            <div class="lb-xp">1200 XP</div>
+          </div>
+          <div class="lb-item rank-bronze">
+            <div class="lb-rank" aria-label="3rd place">🥉</div>
+            <div class="lb-avatar" style="--color:#10b981" aria-hidden="true">A</div>
+            <div class="lb-info">
+              <span class="lb-name">Amit</span>
+              <div class="xp-bar-wrap" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" aria-label="XP progress">
+                <div class="xp-bar" style="--xp:60%"></div>
+              </div>
+            </div>
+            <div class="lb-xp">900 XP</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Idea of the Week + Monthly Challenge -->
+      <div class="section" id="home-highlights-section" style="display:none">
+        <div class="home-highlights">
+          <!-- Idea of the Week -->
+          <div id="idea-of-week-wrap">
+            <div class="featured-card" id="idea-of-week-card">
+              <div class="featured-glow" aria-hidden="true"></div>
+              <div class="featured-label">⭐ Idea of the Week</div>
+              <h3 class="featured-title" id="iotw-title">Loading…</h3>
+              <p class="featured-desc" id="iotw-desc"></p>
+              <div class="featured-meta">
+                <span class="status-badge status-submitted" id="iotw-cat"></span>
+                <span style="font-size:.85rem;color:var(--text-muted)" id="iotw-author"></span>
+              </div>
+            </div>
+          </div>
+          <!-- Monthly Challenge -->
+          <div class="challenge-card" id="monthly-challenge-card">
+            <div class="challenge-label">🔥 Monthly Challenge</div>
+            <p class="challenge-prompt" id="challenge-prompt">Loading…</p>
+            <p style="font-size:.85rem;color:var(--text-muted);margin-bottom:1.25rem">Submit an idea related to this challenge to earn a special badge.</p>
+            <a href="#submit" class="btn btn-outline challenge-cta" data-page="submit">Respond to Challenge →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trending Ideas -->
+      <div class="section" id="trending-section" style="display:none">
+        <div class="section-header">
+          <h2 class="section-title">📈 Trending Ideas</h2>
+          <a href="#feed" class="section-link" data-page="feed">See All →</a>
+        </div>
+        <div class="trending-list" id="trending-list"></div>
+      </div>
+
+      <!-- Recent Ideas -->
+      <div class="section">
+        <div class="section-header">
+          <h2 class="section-title">🌟 Recent Ideas</h2>
+          <a href="#feed" class="section-link" data-page="feed">See All →</a>
+        </div>
+        <div class="ideas-grid" id="home-ideas-grid"></div>
+      </div>
+
+    </section><!-- /page-home -->
+
+    <!-- PAGE: SUBMIT -->
+    <section class="page hidden" id="page-submit" role="region" aria-label="Submit Idea">
+      <div class="page-hero">
+        <h1 class="page-title">💡 Submit Your Idea</h1>
+        <p class="page-subtitle">Share your spark and make a difference in your department.</p>
+      </div>
+      <div class="form-container">
+        <div class="form-card" id="submit-form-card">
+          <form id="idea-form" novalidate>
+            <div class="form-group">
+              <label for="idea-title" class="form-label">Idea Title <span class="required" aria-hidden="true">*</span></label>
+              <input type="text" id="idea-title" name="title" class="form-input"
+                placeholder="e.g. AI Workshop for Students"
+                required maxlength="100" autocomplete="off" />
+              <span class="char-count" id="title-count" aria-live="polite">0 / 100</span>
+            </div>
+            <div class="form-group">
+              <label for="idea-desc" class="form-label">Description <span class="required" aria-hidden="true">*</span></label>
+              <textarea id="idea-desc" name="description" class="form-textarea"
+                placeholder="Describe your idea in detail. What problem does it solve? How can it be implemented?"
+                required maxlength="500" rows="5"></textarea>
+              <span class="char-count" id="desc-count" aria-live="polite">0 / 500</span>
+            </div>
+            <div class="form-group">
+              <label for="idea-category" class="form-label">Category <span class="required" aria-hidden="true">*</span></label>
+              <div class="select-wrap">
+                <select id="idea-category" name="category" class="form-select" required>
+                  <option value="" disabled selected>Select a category…</option>
+                  <option value="academic">Academic Improvement</option>
+                  <option value="laboratory">Laboratory Enhancement</option>
+                  <option value="events">Technical Events</option>
+                  <option value="projects">Projects & Innovation</option>
+                  <option value="infrastructure">Infrastructure</option>
+                  <option value="other">Other</option>
+                </select>
+                <span class="select-arrow" aria-hidden="true">▾</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="idea-name" class="form-label">Student Name <span class="optional">(Optional)</span></label>
+              <input type="text" id="idea-name" name="name" class="form-input"
+                placeholder="Leave blank to submit anonymously" autocomplete="name" />
+            </div>
+            <button type="submit" class="btn btn-primary btn-full" id="submit-btn">
+              <span class="btn-text">Send Spark 🚀</span>
+              <span class="btn-loader hidden" aria-hidden="true"></span>
+            </button>
+          </form>
+        </div>
+        <!-- Success -->
+        <div class="success-card hidden" id="success-card" role="alert" aria-live="polite">
+          <div class="success-anim">
+            <div class="success-ring"></div>
+            <div class="success-ring delay-1"></div>
+            <div class="success-ring delay-2"></div>
+            <div class="success-icon" aria-hidden="true">⚡</div>
+          </div>
+          <h2 class="success-title">Your idea has been submitted successfully! 🎉</h2>
+          <p class="success-msg">Thank you for contributing to the ECE Department.<br/><br/>You earned <strong>+50 XP</strong> for contributing!</p>
+          <div class="xp-gained" aria-label="XP gained: 50">+50 XP</div>
+          <div class="success-actions">
+            <button class="btn btn-primary" id="submit-another">Submit Another</button>
+            <a href="#feed" class="btn btn-outline" data-page="feed">Explore Ideas</a>
+          </div>
+        </div>
+      </div>
+    </section><!-- /page-submit -->
+
+    <!-- PAGE: FEED -->
+    <section class="page hidden" id="page-feed" role="region" aria-label="Idea Feed">
+      <div class="page-hero">
+        <h1 class="page-title">🔥 Idea Feed</h1>
+        <p class="page-subtitle">Browse, vote, and champion the best ideas from your peers.</p>
+      </div>
+      <div class="feed-controls">
+        <div class="filter-bar" role="group" aria-label="Filter by category">
+          <button class="filter-btn active" data-filter="all">All Ideas</button>
+          <button class="filter-btn" data-filter="academic">Academic</button>
+          <button class="filter-btn" data-filter="laboratory">Labs</button>
+          <button class="filter-btn" data-filter="events">Events</button>
+          <button class="filter-btn" data-filter="projects">Projects</button>
+        </div>
+        <div class="feed-sort" style="display: flex; gap: 1rem; align-items: center;">
+          <div class="input-wrap" style="margin: 0;">
+            <input type="text" id="track-id-input" class="form-input" placeholder="Search by ID..." style="height: 48px; padding: 0 1rem; width: 200px;" aria-label="Search by ID" />
+          </div>
+          <div class="select-wrap">
+            <select class="form-select sort-select" id="feed-sort" aria-label="Sort ideas">
+              <option value="votes">Top Voted</option>
+              <option value="recent">Most Recent</option>
+              <option value="implemented">Implemented</option>
+            </select>
+            <span class="select-arrow" aria-hidden="true">▾</span>
+          </div>
+        </div>
+      </div>
+      <div class="ideas-grid feed-grid" id="feed-grid"></div>
+    </section><!-- /page-feed -->
+
+    <!-- PAGE: LEADERBOARD -->
+    <section class="page hidden" id="page-leaderboard" role="region" aria-label="Leaderboard">
+      <div class="page-hero">
+        <h1 class="page-title">🏆 Leaderboard</h1>
+        <p class="page-subtitle">The brightest sparks in the department. Climb the ranks!</p>
+      </div>
+      
+      <div class="leaderboard-full" id="leaderboard-list"></div>
+    </section><!-- /page-leaderboard -->
+
+    <!-- PAGE: ACHIEVEMENTS -->
+    <section class="page hidden" id="page-achievements" role="region" aria-label="Achievements">
+      <div class="page-hero">
+        <h1 class="page-title">🎖️ Achievements</h1>
+        <p class="page-subtitle">Earn badges for contributing and making a difference.</p>
+      </div>
+      <div class="achievements-grid" id="achievements-grid"></div>
+    </section><!-- /page-achievements -->
+
+    <!-- PAGE: HALL OF FAME -->
+    <section class="page hidden" id="page-halloffame" role="region" aria-label="Hall of Fame">
+      <div class="page-hero">
+        <h1 class="page-title">🏅 Hall of Fame</h1>
+        <p class="page-subtitle">Celebrating the most impactful ideas from the ECE Department.</p>
+      </div>
+      <div class="section">
+        <div class="hof-grid" id="hof-grid"></div>
+      </div>
+      <div class="section">
+        <div class="section-header">
+          <h2 class="section-title">🔥 Top Voted Ideas of All Time</h2>
+        </div>
+        <div class="trending-list" id="hof-trending-list"></div>
+      </div>
+    </section><!-- /page-halloffame -->
+
+    <!-- PAGE: IMPLEMENTED TIMELINE -->
+    <section class="page hidden" id="page-timeline" role="region" aria-label="Implemented Ideas Timeline">
+      <div class="page-hero">
+        <h1 class="page-title">🚀 From Suggestion to Reality</h1>
+        <p class="page-subtitle">Every implemented idea started as a student's voice. Here's how your suggestions became real improvements.</p>
+      </div>
+      <div class="section">
+        <div class="timeline" id="timeline-list"></div>
+      </div>
+    </section><!-- /page-timeline -->
+
+    <!-- PAGE: ABOUT -->
+    <section class="page hidden" id="page-about" role="region" aria-label="About SparkBox">
+      <div class="page-hero">
+        <h1 class="page-title">About SparkBox</h1>
+        <p class="page-subtitle">Learn about our mission to improve the department.</p>
+      </div>
+      <div class="section" style="max-width: 800px; margin: 0 auto;">
+        <div style="background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 2rem; border-radius: var(--radius-lg); line-height: 1.6;">
+          <h2 style="font-size: 1.5rem; color: var(--text-primary); margin-bottom: 1rem;">What is SparkBox?</h2>
+          <p style="color: var(--text-secondary); margin-bottom: 2rem;">SparkBox is the official suggestion and innovation platform for the Electronics & Computer Engineering Department at MIT College of Railway Engineering and Research, Barshi.</p>
+
+          <h2 style="font-size: 1.5rem; color: var(--text-primary); margin-bottom: 1rem;">Why was it created?</h2>
+          <p style="color: var(--text-secondary); margin-bottom: 2rem;">To empower students to share their ideas openly, ensuring every voice is heard in our mission to build a better academic and physical environment.</p>
+
+          <h2 style="font-size: 1.5rem; color: var(--text-primary); margin-bottom: 1rem;">How students can contribute?</h2>
+          <p style="color: var(--text-secondary); margin-bottom: 2rem;">Students can submit new ideas, vote on existing ones, and participate in monthly challenges. Contributions are recognized through XP and badges.</p>
+
+          <h2 style="font-size: 1.5rem; color: var(--text-primary); margin-bottom: 1rem;">How the department reviews suggestions?</h2>
+          <p style="color: var(--text-secondary); margin-bottom: 2rem;">Faculty coordinators regularly review top-voted and highly relevant ideas, providing official feedback and updating statuses to keep students informed.</p>
+
+          <h2 style="font-size: 1.5rem; color: var(--text-primary); margin-bottom: 1rem;">How implemented ideas improve the department?</h2>
+          <p style="color: var(--text-secondary); margin-bottom: 2rem;">Successful suggestions lead directly to upgraded labs, better events, refined curriculums, and a more engaging campus life.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE: CONTACT -->
+    <section class="page hidden" id="page-contact" role="region" aria-label="Contact Us">
+      <div class="page-hero">
+        <h1 class="page-title">Contact Us</h1>
+        <p class="page-subtitle">Reach out to the department coordinators.</p>
+      </div>
+      <div class="section" style="max-width: 800px; margin: 0 auto;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+          <div style="background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 2rem; border-radius: var(--radius-lg);">
+            <h3 style="color: var(--text-primary); margin-bottom: 1rem; font-size: 1.25rem;">Department Office</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 0.5rem;"><strong>Location:</strong> ECE Department, Main Building</p>
+            <p style="color: var(--text-secondary); margin-bottom: 0.5rem;"><strong>Email:</strong> ece.suggestions@mitcorer.edu.in</p>
+            <p style="color: var(--text-secondary); margin-bottom: 0.5rem;"><strong>Office Hours:</strong> Mon-Fri, 10:00 AM - 4:00 PM</p>
+            <p style="color: var(--text-secondary); margin-bottom: 0.5rem;"><strong>Faculty Coordinator:</strong> Prof. Placeholder</p>
+          </div>
+          <div style="background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 2rem; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; min-height: 200px;">
+            <p style="color: var(--text-muted);">[Google Maps Placeholder]</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE: FAQ -->
+    <section class="page hidden" id="page-faq" role="region" aria-label="Frequently Asked Questions">
+      <div class="page-hero">
+        <h1 class="page-title">Frequently Asked Questions</h1>
+        <p class="page-subtitle">Got questions? We have answers.</p>
+      </div>
+      <div class="section" style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem;">
+        <div style="background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 1.5rem; border-radius: var(--radius-lg);">
+          <h3 style="color: var(--text-primary); margin-bottom: 0.5rem;">Can I submit anonymously?</h3>
+          <p style="color: var(--text-secondary);">Yes! Just leave the "Student Name" field empty when submitting your idea.</p>
+        </div>
+        <div style="background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 1.5rem; border-radius: var(--radius-lg);">
+          <h3 style="color: var(--text-primary); margin-bottom: 0.5rem;">How long does review take?</h3>
+          <p style="color: var(--text-secondary);">The faculty reviews top ideas bi-weekly. Highly voted ideas are prioritized.</p>
+        </div>
+        <div style="background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 1.5rem; border-radius: var(--radius-lg);">
+          <h3 style="color: var(--text-primary); margin-bottom: 0.5rem;">Who reviews suggestions?</h3>
+          <p style="color: var(--text-secondary);">A dedicated panel of ECE faculty members and the Head of Department.</p>
+        </div>
+        <div style="background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 1.5rem; border-radius: var(--radius-lg);">
+          <h3 style="color: var(--text-primary); margin-bottom: 0.5rem;">Can I edit my suggestion?</h3>
+          <p style="color: var(--text-secondary);">Currently, editing is not supported. Please review your idea carefully before submitting.</p>
+        </div>
+        <div style="background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 1.5rem; border-radius: var(--radius-lg);">
+          <h3 style="color: var(--text-primary); margin-bottom: 0.5rem;">How are ideas selected?</h3>
+          <p style="color: var(--text-secondary);">Ideas are selected based on student votes, feasibility, and impact on the department's goals.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE: 404 -->
+    <section class="page hidden" id="page-404" role="region" aria-label="Page Not Found">
+      <div class="page-hero" style="padding-bottom: 0; min-height: 50vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <h1 class="page-title" style="font-size: 4rem;">404</h1>
+        <p class="page-subtitle" style="margin-bottom: 2rem;">Oops! The page you're looking for doesn't exist.</p>
+        <a href="#home" class="btn btn-primary" data-page="home">Return Home</a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner" style="text-align: center; flex-direction: column; gap: 8px;">
+      <p class="footer-copy" style="font-weight: 600; color: var(--text-primary); font-size: 1rem;">© 2026 SparkBox</p>
+      <p class="footer-copy" style="color: var(--text-secondary);">Electronics & Computer Engineering Department</p>
+      <p class="footer-copy" style="color: var(--text-secondary);">MIT College of Railway Engineering and Research, Barshi</p>
+    </div>
+  </footer>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Confetti canvas -->
+  <canvas id="confetti-canvas" aria-hidden="true"></canvas>
+
+  <script src="app.js"></script>
+</body>
+</html>
