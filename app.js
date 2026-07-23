@@ -600,7 +600,8 @@ function initParticles() {
     particles.forEach(p => {
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(168,85,247,${p.alpha})`;
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      ctx.fillStyle = isDark ? `rgba(168,85,247,${p.alpha})` : `rgba(37,99,235,${p.alpha * 0.35})`;
       ctx.fill();
 
       p.x += p.vx;
@@ -712,9 +713,31 @@ function escHtml(str) {
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 /* ─────────────────────────────
+   THEME TOGGLE
+───────────────────────────── */
+function initThemeToggle() {
+  const toggleBtn = document.getElementById('theme-toggle');
+  if (!toggleBtn) return;
+
+  toggleBtn.addEventListener('click', () => {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+    document.documentElement.classList.add('theme-transitioning');
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('sb_theme', newTheme);
+
+    setTimeout(() => {
+      document.documentElement.classList.remove('theme-transitioning');
+    }, 300);
+  });
+}
+
+/* ─────────────────────────────
    INIT
 ───────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
+  initThemeToggle();
   initParticles();
   initNavigation();
   initForm();

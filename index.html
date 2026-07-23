@@ -16,6 +16,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    (function() {
+      const saved = localStorage.getItem('sb_theme');
+      const theme = (saved === 'dark') ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
 </head>
 <body>
 
@@ -44,6 +51,12 @@
         <li><a href="#contact"      class="nav-link" data-page="contact">Contact</a></li>
         <li><a href="#submit"       class="nav-link nav-cta" data-page="submit">Submit Idea 🚀</a></li>
         <li><a href="admin.html" target="_blank" class="nav-link" style="opacity:0.7;font-size:0.85em">Admin 🔑</a></li>
+        <li>
+          <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Light and Dark Mode">
+            <span class="theme-icon light-icon" aria-hidden="true">☀️</span>
+            <span class="theme-icon dark-icon" aria-hidden="true">🌙</span>
+          </button>
+        </li>
       </ul>
     </div>
   </nav>
@@ -432,9 +445,14 @@
 
   <footer class="footer">
     <div class="footer-inner" style="text-align: center; flex-direction: column; gap: 8px;">
-      <p class="footer-copy" style="font-weight: 600; color: var(--text-primary); font-size: 1rem;">© 2026 SparkBox</p>
-      <p class="footer-copy" style="color: var(--text-secondary);">Electronics & Computer Engineering Department</p>
-      <p class="footer-copy" style="color: var(--text-secondary);">MIT College of Railway Engineering and Research, Barshi</p>
+      <div class="footer-brand" style="justify-content: center;">
+        <span style="font-size:1.3rem;">⚡</span>
+        <span style="font-weight:700; font-size:1.05rem; color: var(--accent);">SparkBox</span>
+      </div>
+      <p class="footer-tagline">"Your Ideas. Our Impact."</p>
+      <p class="footer-copy">Electronics &amp; Computer Engineering Department</p>
+      <p class="footer-copy">MIT College of Railway Engineering and Research, Barshi</p>
+      <p class="footer-copy" style="margin-top: 8px; opacity: 0.6;">© 2026 SparkBox. All rights reserved.</p>
     </div>
   </footer>
 
