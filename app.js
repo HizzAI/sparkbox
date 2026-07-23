@@ -552,11 +552,26 @@ function initNavigation() {
 
   window.addEventListener('popstate', () => navigate(getPage()));
 
-  // Mobile hamburger
-  document.getElementById('nav-toggle')?.addEventListener('click', function () {
+  // Mobile hamburger toggle
+  document.getElementById('nav-toggle')?.addEventListener('click', function (e) {
+    e.stopPropagation();
     const open = this.classList.toggle('open');
     this.setAttribute('aria-expanded', open);
     document.getElementById('nav-links')?.classList.toggle('open', open);
+  });
+
+  // Close mobile navigation when clicking outside navbar
+  document.addEventListener('click', (e) => {
+    const navbar = document.getElementById('navbar');
+    if (navbar && !navbar.contains(e.target)) {
+      const navLinks = document.getElementById('nav-links');
+      const toggle = document.getElementById('nav-toggle');
+      if (navLinks?.classList.contains('open')) {
+        navLinks.classList.remove('open');
+        toggle?.classList.remove('open');
+        toggle?.setAttribute('aria-expanded', 'false');
+      }
+    }
   });
 
   // Navbar scroll shadow

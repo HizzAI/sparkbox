@@ -57,10 +57,31 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Event: announcement form
   document.getElementById('announcement-form')?.addEventListener('submit', handleCreateAnnouncement);
 
-  // Close modal on backdrop click
+  // Event: idea modal backdrop close
   document.getElementById('idea-modal')?.addEventListener('click', (e) => {
     if (e.target === e.currentTarget) e.currentTarget.classList.add('hidden');
   });
+
+  // Mobile sidebar toggle
+  const sidebarToggle = document.getElementById('admin-sidebar-toggle');
+  const sidebar = document.getElementById('admin-sidebar');
+  const backdrop = document.getElementById('admin-sidebar-backdrop');
+
+  function closeAdminSidebar() {
+    sidebar?.classList.remove('open');
+    backdrop?.classList.add('hidden');
+  }
+
+  sidebarToggle?.addEventListener('click', () => {
+    const isOpen = sidebar?.classList.toggle('open');
+    if (isOpen) {
+      backdrop?.classList.remove('hidden');
+    } else {
+      backdrop?.classList.add('hidden');
+    }
+  });
+
+  backdrop?.addEventListener('click', closeAdminSidebar);
 });
 
 function showLogin() {
@@ -131,6 +152,10 @@ function initNav() {
       const target = nav.dataset.target;
       document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
       document.getElementById(`view-${target}`)?.classList.add('active');
+
+      // Auto close sidebar on mobile
+      document.getElementById('admin-sidebar')?.classList.remove('open');
+      document.getElementById('admin-sidebar-backdrop')?.classList.add('hidden');
 
       if (target === 'overview')     { await loadData(); renderOverview(); }
       if (target === 'suggestions')  { await loadData(); renderSuggestions(); }
